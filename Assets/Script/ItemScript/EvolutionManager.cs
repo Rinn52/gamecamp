@@ -10,63 +10,28 @@ public class EvolutionManager : MonoBehaviour
         Egg,
         Larva,
         Adult
-
     }
-
-    private bool _isItemPickUp = false;
 
     private GrowthStage _currentState = GrowthStage.Egg;
 
-   public void ItemPickUp(bool Item)
+    // アイテムを拾ったときに呼ぶ。拾ったアイテムの種類を段階の更新に渡す
+    public void ItemPickUp(ItemType itemType)
     {
-        _isItemPickUp = Item;
-    }
-
-    
-    private void Update()
-    {
-        if (_isItemPickUp)
+        switch (_currentState)
         {
-            switch (_currentState)
-            {
-                case GrowthStage.Egg:
-                    {
-                        if (_currentState == GrowthStage.Egg)
-                        {
-                            _currentState = GrowthStage.Larva;
+            case GrowthStage.Egg:
+                _currentState = GrowthStage.Larva;
+                _playerGrowthController.UpdateGrowthStage(_currentState, itemType);
+                break;
 
-                            _playerGrowthController.UpdateGrowthStage(_currentState);
+            case GrowthStage.Larva:
+                _currentState = GrowthStage.Adult;
+                _playerGrowthController.UpdateGrowthStage(_currentState, itemType);
+                break;
 
-                            _isItemPickUp = false;
-
-                            return;
-                        }
-
-                        break;
-                    }
-                case GrowthStage.Larva:
-                    {
-                        if (_currentState == GrowthStage.Larva)
-                        {
-                            _currentState = GrowthStage.Adult;
-
-                            _playerGrowthController.UpdateGrowthStage(_currentState);
-
-                            _isItemPickUp = false;
-
-                            return;
-                        }
-
-                        break;
-                    }
-
-                case GrowthStage.Adult:
-                    {
-                        break;
-                    }
-                    
-
-            }
+            case GrowthStage.Adult:
+                // 成虫になったら以降は変化なし
+                break;
         }
     }
 }

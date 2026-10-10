@@ -1,10 +1,9 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-
-    private bool _isPickedUp = false;
+    [SerializeField]
+    private ItemType _itemType = ItemType.Normal;
 
     [SerializeField]
     private EvolutionManager _evolutionManager = default;
@@ -13,9 +12,7 @@ public class ItemPickup : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            _isPickedUp = true;
-
-            _evolutionManager.ItemPickUp(_isPickedUp);
+            _evolutionManager.ItemPickUp(_itemType);
 
             gameObject.SetActive(false);
         }

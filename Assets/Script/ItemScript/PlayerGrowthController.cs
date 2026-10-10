@@ -7,13 +7,13 @@ public class PlayerGrowthController : EvolutionManager
 
     private GrowthStage stage;
 
-    public void UpdateGrowthStage(GrowthStage growthStage)
+    public void UpdateGrowthStage(GrowthStage growthStage, ItemType itemType)
     {
         stage = growthStage;
 
         if (_modelSwitcher != null)
         {
-            _modelSwitcher.Apply(growthStage);
+            _modelSwitcher.Apply(growthStage, itemType);
         }
 
         if (stage == GrowthStage.Larva)
@@ -23,7 +23,7 @@ public class PlayerGrowthController : EvolutionManager
 
         else if (stage == GrowthStage.Adult)
         {
-            Debug.Log("成虫");
+            Debug.Log("成虫(" + itemType + ")");
         }
     }
 }
