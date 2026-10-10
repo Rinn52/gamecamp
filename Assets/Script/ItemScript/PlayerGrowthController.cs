@@ -2,20 +2,28 @@ using UnityEngine;
 
 public class PlayerGrowthController : EvolutionManager
 {
+    [SerializeField]
+    private PlayerModelSwitcher _modelSwitcher;
+
     private GrowthStage stage;
 
-   public void UpdateGrowthStage(GrowthStage growthStage)
+    public void UpdateGrowthStage(GrowthStage growthStage)
     {
-       stage = growthStage;
+        stage = growthStage;
 
-        if(stage == GrowthStage.Larva)
+        if (_modelSwitcher != null)
         {
-            Debug.Log("ócíé");
+            _modelSwitcher.Apply(growthStage);
         }
 
-        else if(stage == GrowthStage.Adult)
+        if (stage == GrowthStage.Larva)
         {
-            Debug.Log("ê¨íé");
+            Debug.Log("ÂπºËô´");
+        }
+
+        else if (stage == GrowthStage.Adult)
+        {
+            Debug.Log("ÊàêËô´");
         }
     }
 }

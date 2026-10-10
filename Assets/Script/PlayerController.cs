@@ -31,6 +31,9 @@ public class PlayerController : MonoBehaviour
     private float jumpBufferTimer;
     private bool isDead;
 
+    private bool hasIsGroundedParam;
+    private bool hasSpeedParam;
+
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
 
@@ -38,6 +41,29 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        CacheAnimatorParams();
+    }
+
+    // 差し替え後の Animator を使う(見た目の切り替え用)
+    public void SetAnimator(Animator newAnimator)
+    {
+        animator = newAnimator;
+        CacheAnimatorParams();
+    }
+
+    // Animator に存在するパラメーターだけをセットするため、事前に確認しておく
+    private void CacheAnimatorParams()
+    {
+        hasIsGroundedParam = false;
+        hasSpeedParam = false;
+
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+
+        foreach (var p in animator.parameters)
+        {
+            if (p.nameHash == IsGroundedHash) hasIsGroundedParam = true;
+            if (p.nameHash == SpeedHash) hasSpeedParam = true;
+        }
     }
 
     private void Update()
@@ -83,8 +109,8 @@ public class PlayerController : MonoBehaviour
         // アニメーション
         if (animator != null)
         {
-            animator.SetBool(IsGroundedHash, isGrounded);
-            animator.SetFloat(SpeedHash, Mathf.Abs(rb.linearVelocity.x));
+            if (hasIsGroundedParam) animator.SetBool(IsGroundedHash, isGrounded);
+            if (hasSpeedParam) animator.SetFloat(SpeedHash, Mathf.Abs(rb.linearVelocity.x));
         }
     }
 
