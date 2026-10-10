@@ -21,4 +21,24 @@ public class GameManager : Singleton<GameManager>
     {
         SetupInstance();
     }
+
+    /// <summary>
+    /// タイトルシーンに移動
+    /// </summary>
+    public void LoadTitleScene()
+    {
+        SceneManager.UnloadSceneAsync("Geme");
+        SceneManager.LoadScene("Title", LoadSceneMode.Additive);
+    }
+
+    /// <summary>
+    /// ゲームシーンに移動
+    /// </summary>
+    public void LoadGameScene()
+    {
+        SceneManager.UnloadSceneAsync("Title");
+        SceneManager.LoadScene("Geme", LoadSceneMode.Additive);
+    }
+
+
 }
