@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03518a13df3030843929910e51991b94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RetryManager
-  retryDestinationScene: kasai
+  retryDestinationScene: Geme
   giveUpDestinationScene: GameOver
 --- !u!1 &100000010
 GameObject:

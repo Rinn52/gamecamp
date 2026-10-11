@@ -1,42 +1,116 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageManager : MonoBehaviour
 {
     // Inspectorで設定するステージ生成・削除条件
-    [SerializeField] private GameObject[] stagePrefabs;
+    // [SerializeField] private GameObject[] stagePrefabs;
     [SerializeField, Tooltip("通過判定に使うプレイヤーのTransform")]
     private Transform playerTransform;
+    [SerializeField, Tooltip("ゲーム開始時にプレイヤーを配置するスタート地点")]
+    private Transform playerStartPoint;
+    [SerializeField, Tooltip("踏むとクリアシーンへ移行するステージ内のゴールブロック")]
+    private GameObject goalBlock;
+    [SerializeField, Tooltip("ゴールブロックに乗ったときに移行するシーン名")]
+    private string clearSceneName = "Clear";
     [SerializeField, Min(0f), Tooltip("プレイヤーが通過してからステージを削除するまでの秒数")]
     private float stageDeleteDelay = 5f;
-    [SerializeField, Min(1)] private int stageCount = 10;
-    [SerializeField, Min(0f), Tooltip("ステージのBounds端同士に空けるX方向の距離（ワールド単位）")]
-    private float stageSpacing = 7f;
+    // [SerializeField, Min(1)] private int stageCount = 10;
+    // [SerializeField, Min(0f), Tooltip("ステージのBounds端同士に空けるX方向の距離（ワールド単位）")]
+    // private float stageSpacing = 7f;
 
     private readonly List<GameObject> generatedStages = new List<GameObject>();
     private readonly Dictionary<GameObject, float> passedStageTimes = new Dictionary<GameObject, float>();
+    private Collider[] playerColliders = new Collider[0];
+    private Collider[] goalColliders = new Collider[0];
     private bool hasReportedMissingPlayer;
+    private bool hasReportedMissingPlayerCollider;
+    private bool hasReportedMissingGoal;
+    private bool hasReportedMissingGoalCollider;
+    private bool hasFinished;
 
-    // 起動時にステージをまとめて生成
     private void Start()
     {
-        GenerateStages();
+        if (playerStartPoint == null)
+        {
+            Debug.LogError("Assign the player start point in the StageManager Inspector.", this);
+        }
+        else if (playerTransform != null)
+        {
+            Rigidbody playerRigidbody = playerTransform.GetComponent<Rigidbody>();
+            if (playerRigidbody != null)
+            {
+                playerRigidbody.position = playerStartPoint.position;
+                playerRigidbody.linearVelocity = Vector3.zero;
+                playerRigidbody.angularVelocity = Vector3.zero;
+            }
+            else
+            {
+                playerTransform.position = playerStartPoint.position;
+            }
+        }
+
+        if (playerTransform != null)
+        {
+            playerColliders = playerTransform.GetComponentsInChildren<Collider>();
+        }
+
+        if (goalBlock != null)
+        {
+            goalColliders = goalBlock.GetComponentsInChildren<Collider>();
+        }
+
+        if (playerTransform != null && playerColliders.Length == 0 && !hasReportedMissingPlayerCollider)
+        {
+            Debug.LogError("The assigned player Transform must have a Collider on itself or one of its children.", playerTransform);
+            hasReportedMissingPlayerCollider = true;
+        }
     }
 
     private void Update()
     {
-        // 通過したステージを記録し、指定時間後に削除
         if (playerTransform == null)
         {
             if (!hasReportedMissingPlayer)
             {
-                Debug.LogError("Assign the player Transform in the StageManager Inspector to delete passed stages.", this);
+                Debug.LogError("Assign the player Transform in the StageManager Inspector to check the goal and delete passed stages.", this);
                 hasReportedMissingPlayer = true;
             }
 
             return;
         }
 
+        if (goalBlock == null)
+        {
+            if (!hasReportedMissingGoal)
+            {
+                Debug.LogError("Assign the goal block in the StageManager Inspector.", this);
+                hasReportedMissingGoal = true;
+            }
+        }
+        else if (goalColliders.Length == 0)
+        {
+            if (!hasReportedMissingGoalCollider)
+            {
+                Debug.LogError("The assigned goal block must have a Collider on itself or one of its children.", goalBlock);
+                hasReportedMissingGoalCollider = true;
+            }
+        }
+        else if (!hasFinished && IsPlayerStandingOnGoal())
+        {
+            if (string.IsNullOrWhiteSpace(clearSceneName))
+            {
+                Debug.LogError("Set the clear scene name in the StageManager Inspector.", this);
+                return;
+            }
+
+            hasFinished = true;
+            SceneManager.LoadScene(clearSceneName, LoadSceneMode.Single);
+            return;
+        }
+
+        // 通過したステージを記録し、指定時間後に削除
         for (int i = generatedStages.Count - 1; i >= 0; i--)
         {
             GameObject stage = generatedStages[i];
@@ -63,6 +137,42 @@ public class StageManager : MonoBehaviour
         }
     }
 
+    private bool IsPlayerStandingOnGoal()
+    {
+        foreach (Collider playerCollider in playerColliders)
+        {
+            if (!playerCollider.enabled || !playerCollider.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            Bounds playerBounds = playerCollider.bounds;
+            foreach (Collider goalCollider in goalColliders)
+            {
+                if (!goalCollider.enabled || !goalCollider.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                Bounds goalBounds = goalCollider.bounds;
+                bool overlapsHorizontally = playerBounds.max.x > goalBounds.min.x
+                    && playerBounds.min.x < goalBounds.max.x
+                    && playerBounds.max.z > goalBounds.min.z
+                    && playerBounds.min.z < goalBounds.max.z;
+                bool isAtTopSurface = playerBounds.min.y >= goalBounds.max.y - 0.15f
+                    && playerBounds.min.y <= goalBounds.max.y + 0.15f;
+
+                if (overlapsHorizontally && isAtTopSurface)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /*
     private void GenerateStages()
     {
         // 生成設定とプレハブを検証
@@ -118,7 +228,7 @@ public class StageManager : MonoBehaviour
 
         for (int i = 0; i < stageCount; i++)
         {
-            GameObject stagePrefab = availablePrefabs[Random.Range(0, availablePrefabs.Count)];
+            GameObject stagePrefab = availablePrefabs[i % availablePrefabs.Count];
             if (stagePrefab.scene.IsValid() && !sceneTemplates.Contains(stagePrefab))
             {
                 sceneTemplates.Add(stagePrefab);
@@ -151,6 +261,7 @@ public class StageManager : MonoBehaviour
             sceneTemplate.SetActive(false);
         }
     }
+    */
 
     private static bool TryGetStageBounds(GameObject stage, out Bounds bounds)
     {
