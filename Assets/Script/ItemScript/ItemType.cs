@@ -2,5 +2,8 @@
 public enum ItemType
 {
     Normal,
+    yello,
+    green,
+    blue,
     Hentai,
 }
