@@ -100,6 +100,8 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
             jumpBufferTimer = 0f;
             coyoteTimer = 0f;
+
+            MusicManager.Instance.PlaySe(MusicManager.SeType.Jump);
         }
 
         // 可変ジャンプ(ボタンを離すと低くなる)
@@ -129,6 +131,8 @@ public class PlayerController : MonoBehaviour
         isDead = true;
         rb.linearVelocity = Vector3.zero;
         rb.isKinematic = true; // その場で停止(落ち続けない)
+
+        MusicManager.Instance.StopBgm();
 
         if (gameOverPanel != null)
             gameOverPanel.SetActive(true);
