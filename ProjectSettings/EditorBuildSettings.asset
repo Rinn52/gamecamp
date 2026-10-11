@@ -17,6 +17,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Manager.unity
     guid: dd101fef213ee2d41ab2e8703c09f424
+  - enabled: 1
+    path: Assets/kasai/Retry.unity
+    guid: 68d98c04ef2348a7a942799dccdb4eb5
+  - enabled: 0
+    path: Assets/kasai/GameOver.unity
+    guid: 9abff264989c4e2e9a13cbcdf1427996
+  - enabled: 1
+    path: Assets/kasai/Clear.unity
+    guid: 1fd06a64ea35440ca84585b63814c090
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
