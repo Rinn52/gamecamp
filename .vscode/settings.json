@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "SGC2026.slnx"
+    "dotnet.defaultSolution": "Gamejam.slnx"
 }
