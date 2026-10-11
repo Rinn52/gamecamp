@@ -1,9 +1,29 @@
 fileFormatVersion: 2
-guid: 1f8be543396dc60469f12ca74065728a
+guid: 73019db0841a88c4b92235f23f2c207a
 ModelImporter:
   serializedVersion: 24300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: blow
+    second: {fileID: 2100000, guid: 3972dd1d5721d854495ad83778cbf04c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: body
+    second: {fileID: 2100000, guid: 5cd09f42c5ed4af44848d537b0760a40, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: eyes
+    second: {fileID: 2100000, guid: 882d9899ffe316b409de1c2c464e7224, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wing
+    second: {fileID: 2100000, guid: 682a24247875c0f4b9b0c2c08c8e047e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

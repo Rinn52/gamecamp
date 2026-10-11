@@ -120,8 +120,16 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) return;
 
-        // 常に右へ走る
-        rb.linearVelocity = new Vector3(runSpeed, rb.linearVelocity.y, rb.linearVelocity.z);
+        // 常に右へ走る(壁に当たっている間は、押し付けない)
+        float vx = runSpeed;
+        if (Physics.CapsuleCast(
+                transform.position + Vector3.up * 0.4f,
+                transform.position + Vector3.up * 1.4f,
+                0.3f, Vector3.right, 0.15f, groundLayer))
+        {
+            vx = 0f;
+        }
+        rb.linearVelocity = new Vector3(vx, rb.linearVelocity.y, rb.linearVelocity.z);
     }
 
     // 障害物に当たったとき等に呼ぶ
