@@ -9,7 +9,8 @@ public class EvolutionManager : MonoBehaviour
     {
         Egg,
         Larva,
-        Adult
+        Adult, // ちょうちょ
+        Hentai // へんたい
     }
 
     private GrowthStage _currentState = GrowthStage.Egg;
@@ -25,12 +26,23 @@ public class EvolutionManager : MonoBehaviour
                 break;
 
             case GrowthStage.Larva:
-                _currentState = GrowthStage.Adult;
-                _playerGrowthController.UpdateGrowthStage(_currentState, itemType);
+                if (itemType == ItemType.Normal)
+                {
+                    _currentState = GrowthStage.Adult;
+                    _playerGrowthController.UpdateGrowthStage(_currentState, itemType);
+                }
+                else
+                {
+                    //_currentState = GrowthStage.Hentai;
+                    _currentState = GrowthStage.Adult;
+                    _playerGrowthController.UpdateGrowthStage(_currentState, itemType);
+                }
                 break;
 
             case GrowthStage.Adult:
                 // 成虫になったら以降は変化なし
+                break;
+            case GrowthStage.Hentai:
                 break;
         }
     }

@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float coyoteTime = 0.1f;      // 足場を離れた後も少しジャンプできる猶予
     [SerializeField] private float jumpBufferTime = 0.1f;  // 着地直前の入力を先行受付
     [SerializeField, Range(0f, 1f)] private float jumpCutMultiplier = 0.5f; // ボタンを離したら上昇を弱める
+    [SerializeField] private bool _canAirJump = false;
+    [SerializeField] private float _jumpInterval = 0.3f;
+    [SerializeField] private float jumpCooldownTimer = 0f;
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
@@ -42,6 +45,13 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         CacheAnimatorParams();
+    }
+
+    public void InsectDate(float speed , bool jump)
+    {
+        runSpeed = speed;
+        _canAirJump = jump;
+       
     }
 
     // 差し替え後の Animator を使う(見た目の切り替え用)
@@ -94,12 +104,28 @@ public class PlayerController : MonoBehaviour
         else
             jumpBufferTimer -= Time.deltaTime;
 
+        if (jumpCooldownTimer > 0f) jumpCooldownTimer -= Time.deltaTime;
+
         // ジャンプ実行
-        if (jumpBufferTimer > 0f && coyoteTimer > 0f)
+        if (jumpBufferTimer > 0f && jumpCooldownTimer <= 0f)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
-            jumpBufferTimer = 0f;
-            coyoteTimer = 0f;
+            if (isGrounded || coyoteTimer > 0f)
+            {
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+                jumpBufferTimer = 0f;
+                coyoteTimer = 0f;
+                jumpCooldownTimer = _jumpInterval;
+            }
+
+            else if (_canAirJump)
+            {
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+
+                jumpCooldownTimer = 0f;
+
+                jumpCooldownTimer = _jumpInterval;
+
+            }
         }
 
         // 可変ジャンプ(ボタンを離すと低くなる)

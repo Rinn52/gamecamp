@@ -1602,6 +1602,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGrowthController
   _playerGrowthController: {fileID: 1758808724}
   _modelSwitcher: {fileID: 2020645543}
+  _playerController: {fileID: 2892634436668872184}
+  _normalSpeed: 12
 --- !u!4 &1758808725
 Transform:
   m_ObjectHideFlags: 0
@@ -1697,8 +1699,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5051203514306152462, guid: b8912042fee288c4ca2c5d2d53cd6d6c, type: 3}
       propertyPath: _itemType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5051203514306152462, guid: b8912042fee288c4ca2c5d2d53cd6d6c, type: 3}
+      propertyPath: _butterfly
+      value: 
+      objectReference: {fileID: 11400000, guid: e032eb5d72808624f9b83ec5524bbf5e, type: 2}
     - target: {fileID: -5051203514306152462, guid: b8912042fee288c4ca2c5d2d53cd6d6c, type: 3}
       propertyPath: _evolutionManager
       value: 
@@ -1983,11 +1989,14 @@ MonoBehaviour:
   coyoteTime: 0.1
   jumpBufferTime: 0.1
   jumpCutMultiplier: 0.5
+  _canAirJump: 0
+  _jumpInterval: 1.2
+  jumpCooldownTimer: 0
   groundCheck: {fileID: 1805340949185676987}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 64
   gameOverPanel: {fileID: 657796327}
   fallDeathY: -10
   animator: {fileID: 13154698821344782}
@@ -2717,6 +2726,10 @@ PrefabInstance:
     - target: {fileID: 5634042705664336963, guid: 45959115ea673d042a5327009f6d9d23, type: 3}
       propertyPath: m_Name
       value: Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 5634042705664336963, guid: 45959115ea673d042a5327009f6d9d23, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8189304818993433111, guid: 45959115ea673d042a5327009f6d9d23, type: 3}
       propertyPath: m_LocalPosition.x
