@@ -8,8 +8,6 @@ public class StageManager : MonoBehaviour
     // [SerializeField] private GameObject[] stagePrefabs;
     [SerializeField, Tooltip("通過判定に使うプレイヤーのTransform")]
     private Transform playerTransform;
-    [SerializeField, Tooltip("ゲーム開始時にプレイヤーを配置するスタート地点")]
-    private Transform playerStartPoint;
     [SerializeField, Tooltip("踏むとクリアシーンへ移行するステージ内のゴールブロック")]
     private GameObject goalBlock;
     [SerializeField, Tooltip("ゴールブロックに乗ったときに移行するシーン名")]
@@ -32,25 +30,6 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
-        if (playerStartPoint == null)
-        {
-            Debug.LogError("Assign the player start point in the StageManager Inspector.", this);
-        }
-        else if (playerTransform != null)
-        {
-            Rigidbody playerRigidbody = playerTransform.GetComponent<Rigidbody>();
-            if (playerRigidbody != null)
-            {
-                playerRigidbody.position = playerStartPoint.position;
-                playerRigidbody.linearVelocity = Vector3.zero;
-                playerRigidbody.angularVelocity = Vector3.zero;
-            }
-            else
-            {
-                playerTransform.position = playerStartPoint.position;
-            }
-        }
-
         if (playerTransform != null)
         {
             playerColliders = playerTransform.GetComponentsInChildren<Collider>();

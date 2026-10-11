@@ -167,9 +167,7 @@ public class PlayerController : MonoBehaviour
         rb.isKinematic = true; // その場で停止(落ち続けない)
 
         MusicManager.Instance.StopBgm();
-
-        if (gameOverPanel != null)
-            gameOverPanel.SetActive(true);
+        RetryManager.LoadRetryScene();
     }
 
     private void OnDrawGizmosSelected()
